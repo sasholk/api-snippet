@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -7,9 +7,9 @@ import { AppService } from './app.service';
 import {
   appConfig,
   databaseConfig,
+  envValidationSchema,
   jwtConfig,
   redisConfig,
-  validateEnvVars,
 } from './config/env.config';
 import { TypeOrmConfigService } from './config/typeorm.config';
 
@@ -20,6 +20,7 @@ import { TypeOrmConfigService } from './config/typeorm.config';
       isGlobal: true,
       envFilePath: process.env.NODE_ENV === 'production' ? '.env' : '.env.dev',
       load: [appConfig, databaseConfig, jwtConfig, redisConfig],
+      validationSchema: envValidationSchema,
     }),
     // Database
     TypeOrmModule.forRootAsync({
@@ -31,9 +32,4 @@ import { TypeOrmConfigService } from './config/typeorm.config';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements OnModuleInit {
-  onModuleInit() {
-    // Run custom environment variable validation on application start
-    validateEnvVars();
-  }
-}
+export class AppModule {}

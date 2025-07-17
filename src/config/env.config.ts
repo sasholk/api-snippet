@@ -1,112 +1,48 @@
 import { join } from 'path';
 
 import { registerAs } from '@nestjs/config';
+import * as Joi from 'joi';
 
 /**
  * Environment validation schema using plain object
  * More TypeScript-friendly than Joi schema
  */
-export const envValidationSchema = {
+export const envValidationSchema = Joi.object({
   // Application
-  NODE_ENV: {
-    validate: (value: string): boolean =>
-      ['development', 'production', 'test'].includes(value),
-    default: 'development',
-  },
-  PORT: {
-    validate: (value: string): boolean => !isNaN(Number(value)),
-    default: '3000',
-  },
-  API_PREFIX: {
-    default: 'api',
-  },
+  NODE_ENV: Joi.string()
+    .valid('development', 'production', 'test')
+    .default('development'),
+
+  PORT: Joi.number().default(3000),
+  API_PREFIX: Joi.string().default('api'),
 
   // Database
-  DB_HOST: {
-    required: true,
-  },
-  DB_PORT: {
-    validate: (value: string): boolean => !isNaN(Number(value)),
-    default: '5432',
-  },
-  DB_USERNAME: {
-    required: true,
-  },
-  DB_PASSWORD: {
-    required: true,
-  },
-  DB_NAME: {
-    required: true,
-  },
-  DB_SCHEMA: {
-    default: 'public',
-  },
+  DB_HOST: Joi.string().required(),
+  DB_PORT: Joi.number().default(5432),
+  DB_USERNAME: Joi.string().required(),
+  DB_PASSWORD: Joi.string().required(),
+  DB_NAME: Joi.string().required(),
+  DB_SCHEMA: Joi.string().default('public'),
 
   // TypeORM
-  TYPEORM_LOGGING: {
-    validate: (value: string): boolean => ['true', 'false'].includes(value),
-    default: 'true',
-  },
-  TYPEORM_SYNCHRONIZE: {
-    validate: (value: string): boolean => ['true', 'false'].includes(value),
-    default: 'false',
-  },
-  TYPEORM_MIGRATIONS_RUN: {
-    validate: (value: string): boolean => ['true', 'false'].includes(value),
-    default: 'true',
-  },
+  TYPEORM_LOGGING: Joi.boolean().truthy('true').falsy('false').default(true),
+  TYPEORM_SYNCHRONIZE: Joi.boolean()
+    .truthy('true')
+    .falsy('false')
+    .default(false),
+  TYPEORM_MIGRATIONS_RUN: Joi.boolean()
+    .truthy('true')
+    .falsy('false')
+    .default(true),
 
   // JWT
-  JWT_SECRET: {
-    required: true,
-  },
-  JWT_EXPIRATION: {
-    validate: (value: string): boolean => !isNaN(Number(value)),
-    default: '3600',
-  },
+  JWT_SECRET: Joi.string().required(),
+  JWT_EXPIRATION: Joi.number().default(3600),
 
   // Redis
-  REDIS_HOST: {
-    required: true,
-  },
-  REDIS_PORT: {
-    validate: (value: string): boolean => !isNaN(Number(value)),
-    default: '6379',
-  },
-};
-
-/**
- * Validate environment variables based on schema
- */
-export function validateEnvVars(): void {
-  const errors: string[] = [];
-
-  for (const [key, config] of Object.entries(envValidationSchema)) {
-    const value = process.env[key];
-
-    // Check required fields
-    if ('required' in config && config.required && !value) {
-      errors.push(`Environment variable ${key} is required`);
-      continue;
-    }
-
-    // Run validation functions
-    if (value && 'validate' in config && !config.validate(value)) {
-      errors.push(`Environment variable ${key} failed validation`);
-    }
-
-    // Set defaults if not provided
-    if (!value && 'default' in config) {
-      process.env[key] = config.default;
-    }
-  }
-
-  if (errors.length > 0) {
-    console.error('Environment validation failed:');
-    errors.forEach((error) => console.error(`- ${error}`));
-    throw new Error('Invalid environment configuration');
-  }
-}
+  REDIS_HOST: Joi.string().required(),
+  REDIS_PORT: Joi.number().default(6379),
+});
 
 /**
  * Interface definitions for configuration sections
