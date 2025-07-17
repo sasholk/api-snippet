@@ -19,7 +19,7 @@ COPY . .
 RUN pnpm build
 
 # Remove dev dependencies
-RUN pnpm prune --prod
+# RUN pnpm prune --prod
 
 # Production image
 FROM node:20-alpine AS production
