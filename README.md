@@ -1,29 +1,6 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Snippet Manager API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Snippet Manager API built with [NestJS](https://github.com/nestjs/nest) framework using TypeScript, PostgreSQL, TypeORM, and Redis. The project follows clean architecture principles and provides a robust environment configuration system with Docker support.
 
 ## Project setup
 
@@ -57,41 +34,141 @@ $ pnpm run test:e2e
 $ pnpm run test:cov
 ```
 
-## Deployment
+## Environment Configuration
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+This project uses a robust environment configuration system that validates and provides type safety for all environment variables. The configuration is modular and follows NestJS best practices.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Environment Variables
+
+The following environment variables are used in this application:
+
+#### Application
+- `NODE_ENV` - Application environment ('development', 'production', 'test')
+- `PORT` - Port the application runs on
+- `API_PREFIX` - Prefix for all API endpoints
+
+#### Database
+- `DB_HOST` - PostgreSQL host
+- `DB_PORT` - PostgreSQL port
+- `DB_USERNAME` - PostgreSQL username
+- `DB_PASSWORD` - PostgreSQL password
+- `DB_NAME` - PostgreSQL database name
+- `DB_SCHEMA` - PostgreSQL schema (default: 'public')
+
+#### TypeORM
+- `TYPEORM_LOGGING` - Enable/disable TypeORM query logging
+- `TYPEORM_SYNCHRONIZE` - Enable/disable schema synchronization (WARNING: do not use in production)
+- `TYPEORM_MIGRATIONS_RUN` - Enable/disable automatic migrations on startup
+
+#### JWT
+- `JWT_SECRET` - Secret key for JWT token generation
+- `JWT_EXPIRATION` - JWT token expiration time in seconds
+
+#### Redis
+- `REDIS_HOST` - Redis host
+- `REDIS_PORT` - Redis port
+
+### Environment Files
+
+The application looks for different environment files based on the `NODE_ENV` value:
+
+- `.env.dev` - Used for development environment
+- `.env` - Used for production environment
+
+You can create these files based on the `.env.example` template.
+
+## Database Migrations
+
+This project uses TypeORM migrations for database schema management. Migrations ensure that your database schema changes are versioned, revertible, and can be applied consistently across different environments.
+
+### Creating Migrations
+
+To create a new migration after modifying entity files:
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+# Generate a new migration based on schema changes
+pnpm run migration:generate --name=MigrationName
+
+# Create an empty migration file
+pnpm run migration:create --name=MigrationName
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Running Migrations
 
-## Resources
+Migrations can be run in several ways:
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+# Run migrations manually
+pnpm run migration:run
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Revert the last applied migration
+pnpm run migration:revert
+```
 
-## Support
+### Programmatic Migration Execution
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+The application includes a script to run migrations programmatically, which is especially useful for Docker environments:
 
-## Stay in touch
+```bash
+# Run migrations programmatically
+NODE_ENV=development ts-node src/scripts/run-migrations.ts
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Docker Setup
+
+This project is fully dockerized for both development and production environments.
+
+### Docker Compose
+
+For local development with Docker, use:
+
+```bash
+# Start the application with PostgreSQL and Redis
+docker compose up
+
+# Start in detached mode
+docker compose up -d
+
+# Stop all containers
+docker compose down
+```
+
+### Docker Migration Script
+
+The project includes a `docker-migrations.sh` script that ensures migrations are run after the PostgreSQL container is ready:
+
+```bash
+# Inside Docker container
+./docker-migrations.sh
+```
+
+This script:
+1. Waits for PostgreSQL to be ready
+2. Runs database migrations
+3. Handles retries and error reporting
+
+### Production Docker Deployment
+
+For production deployment:
+
+```bash
+# Build the Docker image
+docker build -t snippet-manager-api .
+
+# Run the container
+docker run -p 3000:3000 --env-file .env snippet-manager-api
+```
+
+## Deployment
+
+When deploying to production, ensure you:
+
+1. Set appropriate environment variables in your `.env` file
+2. Disable `TYPEORM_SYNCHRONIZE` to prevent accidental schema changes
+3. Run migrations manually or via the migration script
+4. Use a process manager like PM2 or Docker orchestration tools for container management
+
+For cloud deployment options, check out the [NestJS deployment documentation](https://docs.nestjs.com/deployment).
 
 ## License
 
