@@ -22,6 +22,7 @@ lerna-debug.log*
 # IDEs and editors
 /.idea
 .project
+.windsurf
 .classpath
 .c9/
 *.launch
@@ -37,10 +38,9 @@ lerna-debug.log*
 
 # dotenv environment variable files
 .env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+.env.dev
+.env.prod
+.env.test
 
 # temp directory
 .temp
